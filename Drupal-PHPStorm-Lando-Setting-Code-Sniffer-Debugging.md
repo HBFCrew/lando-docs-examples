@@ -22,7 +22,7 @@ Add coder to composer.json
 
 or composer require
 
-    lando composer require drupal/coder
+    lando composer global require drupal/coder
 
 It will install *squizlabs/php_codesniffer* + Drupal coding standards sniffers.
 
@@ -36,11 +36,11 @@ Create some special dir for Coder and install via Composer.
 
 .lando.yml
 
-    services:
-      appserver:
-        build:
-          - "mkdir -p /app/coder && cd /app/coder && composer require drupal/coder:8.2.12"
-          - "/app/coder/vendor/bin/phpcs --config-set installed_paths /app/coder/vendor/drupal/coder/coder_sniffer"
+services:
+  appserver:
+    build:
+      - "composer global require drupal/coder"
+      - "/var/www/.composer/vendor/bin/phpcs --config-set installed_paths /var/www/.composer/vendor/drupal/coder/coder_sniffer"
     
 
 If you have PHPCS already installed via Lando, set only path to phpcs (/app/coder/vendor/bin/phpcs) into PHPstorm. 
@@ -84,12 +84,15 @@ You can use . for current dir.
 
 Add handy tool for PHPCS.
 
-    tooling:
-      phpcs:
-        service: appserver
-        cmd: "/app/coder/vendor/bin/phpcs --standard=Drupal,DrupalPractice"
-        options:
-        description: Run phpcs for given folder or file. 
+tooling:
+  drupalcs:
+    service: appserver
+    cmd: "/var/www/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice"
+    description: Run phpcs Drupal Coding Standards against a given file or directory.
+  drupalcbf:
+    service: appserver
+    cmd: "/var/www/.composer/vendor/bin/phpcs --standard=Drupal"
+    description: Automatically fix Drupal coding standards suggestions.
 
 Run new command
 
